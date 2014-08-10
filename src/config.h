@@ -38,6 +38,7 @@ enum {
 	// miscellaneous
 	CTRL_SKIP_TURN,
 	CTRL_QUIT,
+	CTRL_VCONTROL,
 
 	TOTAL_CONTROLS
 };
@@ -50,6 +51,7 @@ typedef struct config {
 	int show_all;
 	int all_alone;
 	int throw_anim_delay;
+	int title_screen;
 	int ctrl[TOTAL_CONTROLS];
 } config_t;
 

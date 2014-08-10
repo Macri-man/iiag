@@ -110,6 +110,7 @@ int main(int argc, char ** argv)
 
 		// miscellaneous
 		case CTRL_SKIP_TURN: break;
+		case CTRL_VCONTROL: controll_display(); break;
 		case CTRL_QUIT: goto cleanup;
 
 		default:
