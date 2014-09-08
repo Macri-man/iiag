@@ -5,7 +5,7 @@
 iform {
 	name = 'rock';
 	char = '*';
-	weight = 500;
+	weight = 2500;
 	freq = 20;
 }
 
@@ -13,9 +13,10 @@ iform {
 iform {
 	name = 'muffin';
 	class = 'food';
+	material = 'muffin';
 	consumable = true;
 	char = '%';
-	weight = 7;
+	weight = 35;
 	restore_stamina = 40;
 	freq = 15;
 }
@@ -29,7 +30,7 @@ iform {
 	char = '0';
 	restore_health = 50;
 	restore_stamina = -10;
-	weight = 5;
+	weight = 35;
 	freq = 3;
 }
 
@@ -39,7 +40,7 @@ iform {
 	consumable = true;
 	equipable = true;
 	char = '|';
-	weight = 3;
+	weight = 15;
 	restore_health = 1;
 	restore_stamina = 20;
 	modify_attack = 4;
@@ -53,7 +54,7 @@ iform {
 	class = 'potion';
 	consumable = true;
 	char = '&';
-	weight = 60;
+	weight = 300;
 	restore_health = 10;
 	freq = 15;
 }
@@ -65,7 +66,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '/';
-	weight = 400;
+	weight = 2000;
 	modify_attack = 6;
 	slot = 'right-hand';
 	freq = 10;
@@ -77,7 +78,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '/';
-	weight = 600;
+	weight = 3000;
 	modify_attack = 7;
 	slot = 'right-hand';
 	freq = 7;
@@ -89,7 +90,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '/';
-	weight = 600;
+	weight = 3000;
 	modify_attack = 7;
 	slot = 'right-hand';
 	freq = 5;
@@ -101,7 +102,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '?';
-	weight = 300;
+	weight = 1500;
 	modify_attack = 6;
 	slot = 'right-hand';
 	freq = 5;
@@ -115,6 +116,7 @@ iform {
 	modify_attack = 9;
 	slot = 'right-hand';
 	freq = 7;
+	weight = 600;
 }
 
 -- Throwing weapons --
@@ -123,7 +125,7 @@ iform {
 	class = 'weapon/throwing';
 	equipable = true;
 	char = '+';
-	weight = 15;
+	weight = 75;
 	modify_attack = 2;
 	slot = 'left-hand';
 	freq = 10;
@@ -137,7 +139,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '^';
-	weight = 250;
+	weight = 1250;
 	modify_ac = 4;
 	slot = 'head';
 	freq = 8;
@@ -149,7 +151,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '^';
-	weight = 290;
+	weight = 1450;
 	modify_ac = 3;
 	slot = 'head';
 	freq = 7;
@@ -161,7 +163,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = ']';
-	weight = 1000;
+	weight = 5000;
 	modify_ac = 9;
 	slot = 'torso';
 	freq = 4;
@@ -173,7 +175,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = ']';
-	weight = 600;
+	weight = 3000;
 	modify_ac = 7;
 	slot = 'torso';
 	freq = 4;
@@ -185,7 +187,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '}';
-	weight = 800;
+	weight = 4000;
 	modify_ac = 7;
 	slot = 'legs';
 	freq = 5;
@@ -197,7 +199,7 @@ iform {
 	material = 'metal';
 	equipable = true;
 	char = '"';
-	weight = 900;
+	weight = 4500;
 	modify_ac = 14;
 	slot = 'feet';
 	freq = 6;
@@ -208,7 +210,7 @@ iform {
 	name = 'magic cape';
 	equipable = true;
 	char = '\\';
-	weight = 150;
+	weight = 750;
 	modify_ac = 5;
 	modify_attack = 10;
 	slot = 'cape';

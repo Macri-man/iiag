@@ -5,7 +5,6 @@
 #ifndef CREATURE_H
 #define CREATURE_H
 
-typedef struct action action;
 typedef struct creature creature;
 
 #include <ncurses.h>
@@ -75,6 +74,10 @@ struct creature {
 	int reflex;
 	int throw;
 	int speed;
+
+	//id for serialization
+	int gen_id;
+	int ai;
 
 	// triggers
 	trigger on_spawn;
@@ -215,5 +218,6 @@ void crtr_act_drop(creature *, int);
 void crtr_act_consume(creature *, int);
 void crtr_act_equip(creature *, int);
 void crtr_act_throw(creature *, int, int, int);
+void crtr_act_idle(creature * c);
 
 #endif

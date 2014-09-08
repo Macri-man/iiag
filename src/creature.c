@@ -8,9 +8,10 @@
 #include "log.h"
 #include "zone.h"
 #include "world.h"
+#include "config.h"
 #include "player.h"
-#include "display.h"
 #include "creature.h"
+#include "io/display.h"
 
 // lower => levelup faster
 #define LEVELING_CONSTANT 4
@@ -65,9 +66,10 @@ void crtr_init(creature * c, chtype ch)
 	c->sight   = 15;
 	c->reflex  = 1;
 	c->throw   = 20;
+	c->ai	   = 1;
 	c->speed   = SEC(1.4);
 
-	c->inv = inv_new(5000);
+	c->inv = inv_new(25000);
 	for (i = 0; i < MAX_SLOTS; i++) c->slots[i] = NULL;
 
 	trigger_init(c->on_spawn);
@@ -94,7 +96,7 @@ creature * crtr_copy(const creature * p)
 {
 	creature * c = crtr_new(p->ch);
 
-	// There should be no reason for coping a deceased creature
+	// There should be no reason for copying a deceased creature
 	assert(!p->deceased);
 
 	c->specific_name = copy_str(p->specific_name);
@@ -117,6 +119,8 @@ creature * crtr_copy(const creature * p)
 	c->sight       = p->sight;
 	c->throw       = p->throw;
 	c->speed       = p->speed;
+	c->ai	       = p->ai;
+	c->gen_id      = p->gen_id;
 
 	c->on_spawn = p->on_spawn;
 	c->on_death = p->on_death;
@@ -148,6 +152,8 @@ void crtr_spawn(creature * c, zone * z)
 {
 	int timeout = SPAWN_TIMEOUT;
 	int x, y;
+
+	info("Spawning %s", crtr_name(c));
 
 	do {
 		x = random() % z->width;
@@ -182,6 +188,8 @@ void crtr_death(creature * c, char * meth)
 {
 	assert(c->z != NULL);
 
+	debug("%s died from %s", crtr_name(c), meth);
+
 	c->deceased = 1;
 	trigger_pull(&c->on_death, c, meth);
 
@@ -198,6 +206,14 @@ void crtr_death(creature * c, char * meth)
 //
 int crtr_tele(creature * crtr, int x, int y, zone * z)
 {
+
+	/*#ifdef SERVER
+		zone* old_zone;
+		int old_x,old_y;
+		old_zone=crtr->z;
+		old_x=crtr->x;
+		old_y=crtr->y;
+	#endif*/
 	if (crtr_can_tele(crtr, x, y, z)) {
 		z->tiles[x][y].crtr = crtr;
 
@@ -234,8 +250,15 @@ int crtr_tele(creature * crtr, int x, int y, zone * z)
 		crtr->y = y;
 		crtr->z = z;
 
+		/*#ifdef SERVER
+			if(old_zone)
+				server_tile_update(&(old_zone->tiles[old_x][old_y]), old_x, old_y);
+		#endif*/
+
 		return 1;
 	}
+
+	debug("%s failed to teleport to %s@%d,%d", crtr_name(crtr), zone_name(z), x, y);
 
 	return 0;
 }
@@ -265,6 +288,7 @@ int crtr_move(creature * crtr, int dx, int dy)
 //
 void crtr_xp_up(creature * c, int xp)
 {
+	debug("%s received %d xp", crtr_name(c), xp);
 	c->xp += xp;
 	if (c->xp > c->need_xp) {
 		// level up!
@@ -315,11 +339,15 @@ int crtr_attack(creature * attacker, creature * defender)
 {
 	int damage, xp;
 
+	debug("%s attacks %s", crtr_name(attacker), crtr_name(defender));
+
 	damage = random() % (attacker->attack + 1);
 	damage -= random() % (defender->ac + 1);
 	if (damage < 0) damage = 0;
 
-	defender->health -= damage;
+	if (!(config.god_mode && plyr_is_crtr(defender))) {
+		defender->health -= damage;
+	}
 
 	if (defender->health <= 0) {
 		// death comes to us all
@@ -414,8 +442,8 @@ static void beast_ai(creature * c)
 				dx = 0;
 			}
 		}
-
-		crtr_act_aa_move(c, dx, dy);
+		//if(!config.multiplayer)
+			crtr_act_aa_move(c, dx, dy);
 	}
 }
 
@@ -436,7 +464,7 @@ void crtr_step(creature * c, long steps)
 	}
 
 	// handle ai when can perform action
-	if (c->act == NULL && !plyr_is_me(c)) {
+	if (c->act == NULL && !plyr_is_crtr(c)) {
 		beast_ai(c);
 	}
 }
@@ -485,6 +513,10 @@ void crtr_try_aa_move(creature * c, int dx, int dy)
 	tile * t;
 	creature * d;
 
+	//movement in muliplayer is impossible!
+	if(config.multiplayer)
+		return;
+
 	assert(dx || dy);
 
 	if (!crtr_move(c, dx, dy)) {
@@ -498,17 +530,17 @@ void crtr_try_aa_move(creature * c, int dx, int dy)
 			switch (dam = crtr_attack(c, d)) {
 			case DEAD:
 				// TODO memos should probably be in player.c
-				if (plyr_is_me(c)) memo("You slay the %s.", crtr_name(d));
+				if (plyr_is_crtr(c)) memo("You slay the %s.", crtr_name(d));
 
 				crtr_free(d);
 				break;
 			case 0:
-				if (plyr_is_me(c)) memo("You miss.");
-				if (plyr_is_me(d)) memo("You dodge the %s's attack.", crtr_name(c));
+				if (plyr_is_crtr(c)) memo("You miss.");
+				if (plyr_is_crtr(d)) memo("You dodge the %s's attack.", crtr_name(c));
 				break;
 			default:
-				if (plyr_is_me(c)) memo("You hit for %d damage.", dam);
-				if (plyr_is_me(d)) memo("You are hit by %s for %d damage.", crtr_name(c), dam);
+				if (plyr_is_crtr(c)) memo("You hit for %d damage.", dam);
+				if (plyr_is_crtr(d)) memo("You are hit by %s for %d damage.", crtr_name(c), dam);
 				break;
 			}
 		} else {
@@ -676,5 +708,11 @@ void crtr_act_throw(creature * c, int i, int x, int y)
 	a->p.throw.ind = i;
 	a->p.throw.x   = x;
 	a->p.throw.y   = y;
+	schedule(a, c->speed);
+}
+
+void crtr_act_idle(creature * c)
+{
+	ACT_TMPLT(ACT_IDLE);
 	schedule(a, c->speed);
 }

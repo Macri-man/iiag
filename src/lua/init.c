@@ -11,7 +11,7 @@
 #include "form.h"
 #include "../log.h"
 #include "../config.h"
-#include "../display.h"
+#include "../io/display.h"
 
 lua_State * prim_lstate;
 
@@ -20,11 +20,16 @@ static const struct {
 	lua_CFunction func;
 } funcs[] = {
 	{ "memo",     lcf_memo     },
-	{ "wrlog",    lcf_wrlog    },
+	{ "debug",    lcf_debug    },
+	{ "info",     lcf_info     },
+	{ "notice",   lcf_notice   },
+	{ "warning",  lcf_warning  },
+	{ "error",    lcf_error    },
 	{ "cform",    lcf_creature },
 	{ "player",   lcf_player   },
 	{ "iform",    lcf_item     },
 	{ "material", lcf_material },
+	{ "rform",    lcf_room     },
 };
 
 void init_lua(void)

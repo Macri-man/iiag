@@ -5,7 +5,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include "creature.h"
+#include "../creature.h"
 
 //
 // Gets a keypress and translates it into a control value
@@ -22,5 +22,6 @@ int prompt_dir(const char *, int *, int *);
 //
 int prompt_inv(const char *, inventory *, struct creature *);
 
+char * prompt_command(void);
 
 #endif

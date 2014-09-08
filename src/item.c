@@ -10,7 +10,7 @@
 #include "util.h"
 #include "config.h"
 #include "player.h"
-#include "display.h"
+#include "io/display.h"
 
 //
 // Allocates a new item
@@ -58,6 +58,8 @@ item * item_copy(const item * pt)
 	it->spikiness       = pt->spikiness;
 	it->mat_class       = copy_str(pt->mat_class);
 	it->mat             = pt->mat;
+	it->gen_id          = pt->gen_id;
+	it->gen_mat_id      = pt->gen_mat_id;
 
 	if (it->mat != NULL) it->mat->refs++;
 

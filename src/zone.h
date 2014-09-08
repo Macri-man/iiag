@@ -8,21 +8,26 @@
 typedef struct tile tile;
 typedef struct zone zone;
 
-#define TILE_MAX_WEIGHT 1000
+#define TILE_MAX_WEIGHT 50000
 
 #include "util.h"
 #include "creature.h"
 #include "inventory.h"
 
 struct tile {
-	chtype ch;
+	chtype ch, show_ch;
 	int show;
 	int impassible;  // whether the tile is pasible or not
 	creature * crtr; // creture that may be on the tile
 	inventory * inv; // inventory of the tile
+
+	int linked;
+	int link_x, link_y;
+	zone * link_z;
 };
 
 struct zone {
+	char * name;
 	int width, height; // width and height of zone
 	tile ** tiles;     // array of tiles in the zone
 	vector_t crtrs;    // list of all creatures in the zone
@@ -69,6 +74,11 @@ void zone_rm_crtr(zone *, creature *);
 void zone_step(zone *, long);
 
 //
+// This function sets up an empty tile, used for zone generation
+//
+void zone_empty_tile(zone *, int, int);
+
+//
 // Takes a two (x, y) pairs and a max distance and checks if the tiles are
 //  within visible range of each other.
 //
@@ -78,5 +88,10 @@ int zone_can_see(zone *, int, int, int, int, int);
 // Returns the tile of a given creature
 //
 #define tileof(O) (&(O)->z->tiles[(O)->x][(O)->y])
+
+//
+// Safely returns the name of a zone.
+//
+const char *zone_name(zone *);
 
 #endif

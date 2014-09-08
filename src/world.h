@@ -10,8 +10,10 @@ typedef struct action_node action_node;
 #include "item.h"
 #include "util.h"
 #include "zone.h"
+#include "names.h"
 #include "creature.h"
 #include "generator.h"
+#include "room.h"
 
 typedef struct {
 	int era, year, month;
@@ -33,12 +35,16 @@ typedef struct {
 	vector_t zones;    // list of zones that exist
 	gclass_t * gcrtrs; // generatable creatures
 	gclass_t * gitems; // generatable items
+	gclass_t * grooms; // generatable rooms 
 	gclass_t * gmats;  // generatable materials
 
 	// for the action min-heap
 	action_node * acts;
 	int acts_cnt;
 	int acts_alloc;
+
+	// for name generation
+	ethnicity * eth;
 } world_t;
 
 // The singleton world object

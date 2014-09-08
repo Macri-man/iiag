@@ -5,6 +5,8 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include "log.h"
+
 // controls enumerations
 enum {
 	CTRL_INVALID = -1,
@@ -18,6 +20,7 @@ enum {
 	CTRL_URIGHT,
 	CTRL_DLEFT,
 	CTRL_DRIGHT,
+	CTRL_ENTER,
 
 	// scrolling
 	CTRL_SCRL_CENTER,
@@ -39,6 +42,8 @@ enum {
 	CTRL_SKIP_TURN,
 	CTRL_QUIT,
 	CTRL_VCONTROL,
+	CTRL_COMMAND,
+
 
 	TOTAL_CONTROLS
 };
@@ -47,9 +52,15 @@ enum {
 typedef struct config {
 	const char * cfg_file;
 	const char * lua_init;
+	const char * ip;
+	int port;
 	int forget_walls;
 	int show_all;
 	int all_alone;
+	int god_mode;
+	int real_time;
+	int multiplayer;
+	log_level_t log_level;
 	int throw_anim_delay;
 	int title_screen;
 	int ctrl[TOTAL_CONTROLS];
