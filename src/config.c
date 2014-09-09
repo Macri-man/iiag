@@ -25,7 +25,6 @@ config_t config = {
 	0,                  // multiplayer
 	LOG_INFO,           // log_level
 	20,                 // throw_anim_delay
-<<<<<<< HEAD
 
 	{
 		// movement controls
@@ -64,26 +63,18 @@ config_t config = {
 		':', // command mode
 	},
 
-=======
->>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
+
 };
 
 ///// Define the Configuration Language /////
 struct field {
-<<<<<<< HEAD
-		enum {
-				STRING,
-				CONTROL,
-				BOOLEAN,
-				INTEGER,
-		} type;
-=======
+
 	enum {
 		STRING,
 		BOOLEAN,
 		INTEGER,
 	} type;
->>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
+
 
 		char * name;
 		void * ptr;
@@ -216,12 +207,7 @@ static void expect(char c, FILE * f, const char * fn)
 
 static void load_config(const char * file)
 {
-<<<<<<< HEAD
-
-	int i;
-=======
 	int i, ctrl;
->>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 	FILE * f;
 	char * name;
 	const struct field * fld;
@@ -260,13 +246,6 @@ static void load_config(const char * file)
 				free(get_string(f));
 			}
 		} else {
-<<<<<<< HEAD
-				f = fopen(file, "r");
-				if (f == NULL) {
-						wrlog("Could not open config file '%s'", file);
-						return;
-				}
-=======
 			switch (fld->type) {
 			case STRING:
 				// FIXME potential memory leak
@@ -279,7 +258,6 @@ static void load_config(const char * file)
 				*(int *)fld->ptr = get_integer(f);
 				break;
 			}
->>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 		}
 
 				if (fld == NULL) {
