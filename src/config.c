@@ -266,20 +266,6 @@ static void load_config(const char * file)
 				}
 		}
 
-		while (igspaces(f) != EOF) {
-				fld = NULL;
-				name = get_string(f);
-
-				for (i = 0; i < sizeof(cfg_fields) / sizeof(*cfg_fields); i++) {
-						if (!strcmp(cfg_fields[i].name, name)) {
-								fld = cfg_fields + i;
-								break;
-						}
-				}
-
-				igspaces(f);
-				expect('=', f, file);
-
 				if (fld == NULL) {
 						wrlog("%s: Unknown field '%s'", file, name);
 						free(get_string(f));
@@ -397,4 +383,5 @@ void init_config(int argc, char ** argv)
 		if (config.cfg_file != NULL) {
 				load_config(config.cfg_file);
 		}
+	}
 }
