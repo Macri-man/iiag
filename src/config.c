@@ -10,6 +10,7 @@
 #include <ncurses.h> // for KEY_UP, KEY_DOWN, etc.
 #include "log.h"
 #include "config.h"
+#include "controls.h"
 
 ///// Default Configuration /////
 config_t config = {
@@ -24,6 +25,7 @@ config_t config = {
 	0,                  // multiplayer
 	LOG_INFO,           // log_level
 	20,                 // throw_anim_delay
+<<<<<<< HEAD
 
 	{
 		// movement controls
@@ -62,16 +64,26 @@ config_t config = {
 		':', // command mode
 	},
 
+=======
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 };
 
 ///// Define the Configuration Language /////
 struct field {
+<<<<<<< HEAD
 		enum {
 				STRING,
 				CONTROL,
 				BOOLEAN,
 				INTEGER,
 		} type;
+=======
+	enum {
+		STRING,
+		BOOLEAN,
+		INTEGER,
+	} type;
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 
 		char * name;
 		void * ptr;
@@ -88,27 +100,6 @@ static const struct field cfg_fields[] = {
 	{ INTEGER, "log-level",        &config.log_level        },
 	{ INTEGER, "throw-anim-delay", &config.throw_anim_delay },
 	{ INTEGER, "port",             &config.port             },
-
-	// movement controls
-	{ CONTROL, "ctrl-up",     config.ctrl + CTRL_UP     },
-	{ CONTROL, "ctrl-down",   config.ctrl + CTRL_DOWN   },
-	{ CONTROL, "ctrl-left",   config.ctrl + CTRL_LEFT   },
-	{ CONTROL, "ctrl-right",  config.ctrl + CTRL_RIGHT  },
-	{ CONTROL, "ctrl-uleft",  config.ctrl + CTRL_ULEFT  },
-	{ CONTROL, "ctrl-uright", config.ctrl + CTRL_URIGHT },
-	{ CONTROL, "ctrl-dleft",  config.ctrl + CTRL_DLEFT  },
-	{ CONTROL, "ctrl-dright", config.ctrl + CTRL_DRIGHT },
-	{ CONTROL, "ctrl-enter",  config.ctrl + CTRL_ENTER  },
-
-	// scrolling controls
-	{ CONTROL, "ctrl-scrl-center", config.ctrl + CTRL_SCRL_CENTER },
-	{ CONTROL, "ctrl-scrl-up",     config.ctrl + CTRL_SCRL_UP     },
-	{ CONTROL, "ctrl-scrl-down",   config.ctrl + CTRL_SCRL_DOWN   },
-	{ CONTROL, "ctrl-scrl-left",   config.ctrl + CTRL_SCRL_LEFT   },
-	{ CONTROL, "ctrl-scrl-right",  config.ctrl + CTRL_SCRL_RIGHT  },
-
-	// Miscellaneous
-	{ CONTROL, "ctrl-command", config.ctrl + CTRL_COMMAND },
 };
 
 ///// Configuration file parsing /////
@@ -225,8 +216,12 @@ static void expect(char c, FILE * f, const char * fn)
 
 static void load_config(const char * file)
 {
+<<<<<<< HEAD
 
 	int i;
+=======
+	int i, ctrl;
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 	FILE * f;
 	char * name;
 	const struct field * fld;
@@ -256,14 +251,35 @@ static void load_config(const char * file)
 		expect('=', f, file);
 
 		if (fld == NULL) {
-			warning("%s: Unknown field '%s'", file, name);
-			free(get_string(f));
+			ctrl = ctrl_by_field(name);
+
+			if (ctrl != CTRL_INVALID) {
+				controls[ctrl].key = get_control(f);
+			} else {
+				warning("%s: Unknown field '%s'", file, name);
+				free(get_string(f));
+			}
 		} else {
+<<<<<<< HEAD
 				f = fopen(file, "r");
 				if (f == NULL) {
 						wrlog("Could not open config file '%s'", file);
 						return;
 				}
+=======
+			switch (fld->type) {
+			case STRING:
+				// FIXME potential memory leak
+				*(char **)fld->ptr = get_string(f);
+				break;
+			case BOOLEAN:
+				*(int *)fld->ptr = get_boolean(f, file);
+				break;
+			case INTEGER:
+				*(int *)fld->ptr = get_integer(f);
+				break;
+			}
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 		}
 
 				if (fld == NULL) {
@@ -292,6 +308,53 @@ static void load_config(const char * file)
 
 		if (f != stdin) fclose(f);
 }
+
+//controls with config
+void save_config(const char* pname){
+	int i;
+	FILE*f;
+
+	char * name = malloc(strlen(pname) + 5);
+	char* suffix=".cfg";
+
+	strcpy(name, pname);
+	strcat(name, suffix);
+	config.cfg_file=name;
+
+	f = fopen(name, "wb+");
+
+	fprintf(f, "%s=%s\n","lua",config.lua_init);
+	fprintf(f, "%s=%s\n","server-ip",config.ip);
+	fprintf(f, "%s=%d\n","port",config.port);
+    fprintf(f, "%s=%d\n","forget-walls",config.forget_walls);
+	fprintf(f, "%s=%d\n","show-all",config.show_all);
+	fprintf(f, "%s=%d\n","all-alone",config.all_alone);
+	fprintf(f, "%s=%d\n","god-mode",config.god_mode);
+	fprintf(f, "%s=%d\n","real-time",config.real_time);
+	fprintf(f, "%s=%d\n","log-level",config.log_level);
+	fprintf(f, "%s=%d\n","anime_throw",config.throw_anim_delay);
+
+	for(i=0;i<TOTAL_CONTROLS;i++){
+		switch(controls[i].key){
+			case KEY_UP:
+				fprintf(f, "%s=%%up%%\n",controls[i].field);
+			break;
+			case KEY_DOWN:
+				fprintf(f, "%s=%%down%%\n",controls[i].field);
+			break;
+			case KEY_LEFT:
+				fprintf(f, "%s=%%left%%\n",controls[i].field);
+			break;
+			case KEY_RIGHT:
+				fprintf(f, "%s=%%right%%\n",controls[i].field);
+			break;
+			default:
+				fprintf(f, "%s=%c\n",controls[i].field,controls[i].key);
+		}
+	}
+	fclose(f);
+}
+
 
 ///// Command line argument parsing /////
 static void print_help()

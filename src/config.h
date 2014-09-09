@@ -7,6 +7,7 @@
 
 #include "log.h"
 
+<<<<<<< HEAD
 // controls enumerations
 enum {
 	CTRL_INVALID = -1,
@@ -51,6 +52,8 @@ enum {
 	TOTAL_CONTROLS
 };
 
+=======
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 // defines how all the configuration data is stored
 typedef struct config {
 	const char * cfg_file;
@@ -65,12 +68,16 @@ typedef struct config {
 	int multiplayer;
 	log_level_t log_level;
 	int throw_anim_delay;
+<<<<<<< HEAD
 	int title_screen;
 	int ctrl[TOTAL_CONTROLS];
+=======
+>>>>>>> 8209de493d3ae381f8deacbb890de7bc464af60b
 } config_t;
 
 extern config_t config;
 
 void init_config(int, char **);
+void save_config(const char* pname);
 
 #endif
