@@ -25,45 +25,6 @@ config_t config = {
 	0,                  // multiplayer
 	LOG_INFO,           // log_level
 	20,                 // throw_anim_delay
-
-	{
-		// movement controls
-		'k', // up
-		'j', // down
-		'h', // left
-		'l', // right
-		'y', // up left
-		'u', // up right
-		'b', // down left
-		'n', // down right
-		'z', // modify z-axis
-
-		// scrolling controls
-		'C',
-		KEY_UP,
-		KEY_DOWN,
-		KEY_LEFT,
-		KEY_RIGHT,
-
-		// action controls
-		'i', // display inventory
-		'E', // display equipped
-		',', // pickup
-		'.', // drop
-		'c', // consume
-		'w', // equip
-		't', // throw
-
-		// miscellaneous controls
-		's', // skip turn
-		' ', // display control
-		'S', // save controls
-		'L', // load controls
-		'q', // quit
-		':', // command mode
-	},
-
-
 };
 
 ///// Define the Configuration Language /////
